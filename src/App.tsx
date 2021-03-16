@@ -35,7 +35,9 @@ const ArrayHandler: React.FC<{ arr_data: Array<any>; path: string; firebase_coll
 		return (
 			<Fragment>
 				{arr_data.map((data, idx) => {
-					return <DataHandler firebase_collection={firebase_collection} firebase_id={firebase_id} data={data} path={path + '/idx_' + idx} />
+					return (
+						<DataHandler firebase_collection={firebase_collection} firebase_id={firebase_id} data={data} path={path + '[' + idx + ']'} />
+					)
 				})}
 			</Fragment>
 		)

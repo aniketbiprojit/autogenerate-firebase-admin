@@ -6,24 +6,33 @@ import { FirebaseAppProvider, useFirestore, useFirestoreCollectionData } from 'r
 import './App.css'
 
 import config from './firebase_config.json'
+import { Table } from 'react-bootstrap'
+
+const Uploadable: React.FC = ({ children }) => {
+	return <Fragment>{children}</Fragment>
+}
+
+const Editable: React.FC<{ text: string }> = ({ children, text }) => {
+	return <Fragment>{text}</Fragment>
+}
 
 const Tester: React.FC = () => {
-	const burritoRef = useFirestore().collection('competitions')
+	const data_ref = useFirestore().collection('competitions')
 
-	const { status, data } = useFirestoreCollectionData(burritoRef)
+	const { status, data } = useFirestoreCollectionData(data_ref)
 	if (status === 'loading') {
 		return <p>Fetching Data</p>
 	} else {
 		console.log(data)
 		return (
 			<Fragment>
-				<table>
+				<Table striped bordered hover>
 					<thead>
 						<tr>
 							{Object.keys(data?.[0])
 								.sort()
 								.map((elem) => {
-									return <th>{elem}</th>
+									return <th key={elem}>{elem}</th>
 								})}
 						</tr>
 					</thead>
@@ -35,16 +44,20 @@ const Tester: React.FC = () => {
 									{keys.map((key) => {
 										if (key === 'image') {
 											return (
-												<Fragment>
-													<td>
-														<img style={{ height: '100px' }} src={elem[key] as string} alt='' />
+												<Fragment key={elem[key] as string}>
+													<td style={{ maxWidth: '200px' }}>
+														<Uploadable>
+															<img style={{ width: '100%' }} src={elem[key] as string} alt='' />
+														</Uploadable>
 													</td>
 												</Fragment>
 											)
 										} else
 											return (
-												<Fragment>
-													<td>{elem[key] as string}</td>
+												<Fragment key={elem[key] as string}>
+													<td style={{ maxWidth: '200px' }}>
+														<Editable text={elem[key] as string}></Editable>
+													</td>
 												</Fragment>
 											)
 									})}
@@ -52,7 +65,7 @@ const Tester: React.FC = () => {
 							)
 						})}
 					</tbody>
-				</table>
+				</Table>
 			</Fragment>
 		)
 	}

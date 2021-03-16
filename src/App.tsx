@@ -6,7 +6,7 @@ import { FirebaseAppProvider, useFirestore, useFirestoreCollectionData } from 'r
 import './App.css'
 
 import config from './firebase_config.json'
-import { Table } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 
 const Uploadable: React.FC = ({ children }) => {
 	return <Fragment>{children}</Fragment>
@@ -21,20 +21,25 @@ const Editable: React.FC<{
 	return (
 		<Fragment>
 			{clicked ? (
-				<textarea cols={40} rows={10}>
-					{text}
-				</textarea>
+				<Fragment>
+					<textarea cols={20} rows={10}>
+						{text}
+					</textarea>
+					<Button onClick={() => setClicked(!clicked)} variant='primary'>
+						Submit
+					</Button>{' '}
+				</Fragment>
 			) : (
 				<div onClick={() => setClicked(!clicked)} className='' style={{ minHeight: '20px' }}>
-					<p>{text}</p>
+					<p style={{ width: '220px', whiteSpace: 'normal', overflow: 'hidden', textOverflow: 'ellipsis' }}>{text}</p>
 				</div>
 			)}
 		</Fragment>
 	)
 }
 
-const Tester: React.FC = () => {
-	const data_ref = useFirestore().collection('competitions')
+const Tester: React.FC<{ collection_name: string }> = ({ collection_name }) => {
+	const data_ref = useFirestore().collection(collection_name)
 
 	const { status, data } = useFirestoreCollectionData(data_ref)
 	if (status === 'loading') {
@@ -59,7 +64,7 @@ const Tester: React.FC = () => {
 							return (
 								<tr key={(elem['NO_ID_FIELD'] as string) ?? ''}>
 									{keys.map((key) => {
-										if (key === 'image') {
+										if (key === 'image' || key === 'svgSrc') {
 											return (
 												<Fragment key={elem[key] as string}>
 													<td style={{ maxWidth: '200px' }}>
@@ -73,11 +78,15 @@ const Tester: React.FC = () => {
 											return (
 												<Fragment key={elem[key] as string}>
 													<td style={{ maxWidth: '200px' }}>
-														<Editable
-															firebase_collection={'competition'}
-															firebase_id={elem['NO_ID_FIELD'] as string}
-															text={elem[key] as string}
-														></Editable>
+														{key === 'NO_ID_FIELD' ? (
+															(elem[key] as string)
+														) : (
+															<Editable
+																firebase_collection={collection_name}
+																firebase_id={elem['NO_ID_FIELD'] as string}
+																text={typeof elem[key] === 'object' ? '' : (elem[key] as string)}
+															></Editable>
+														)}
 													</td>
 												</Fragment>
 											)
@@ -96,7 +105,7 @@ const App: React.FC = () => {
 	return (
 		<Fragment>
 			<FirebaseAppProvider firebaseConfig={config}>
-				<Tester></Tester>
+				<Tester collection_name='data'></Tester>
 			</FirebaseAppProvider>
 		</Fragment>
 	)

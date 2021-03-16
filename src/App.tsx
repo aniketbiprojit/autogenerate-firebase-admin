@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 
 import 'firebase/firestore'
 import { FirebaseAppProvider, useFirestore, useFirestoreCollectionData } from 'reactfire'
@@ -12,8 +12,25 @@ const Uploadable: React.FC = ({ children }) => {
 	return <Fragment>{children}</Fragment>
 }
 
-const Editable: React.FC<{ text: string }> = ({ children, text }) => {
-	return <Fragment>{text}</Fragment>
+const Editable: React.FC<{
+	text: string
+	firebase_collection: string
+	firebase_id: string
+}> = ({ text }) => {
+	const [clicked, setClicked] = useState<boolean>(false)
+	return (
+		<Fragment>
+			{clicked ? (
+				<textarea cols={40} rows={10}>
+					{text}
+				</textarea>
+			) : (
+				<div onClick={() => setClicked(!clicked)} className='' style={{ minHeight: '20px' }}>
+					<p>{text}</p>
+				</div>
+			)}
+		</Fragment>
+	)
 }
 
 const Tester: React.FC = () => {
@@ -56,7 +73,11 @@ const Tester: React.FC = () => {
 											return (
 												<Fragment key={elem[key] as string}>
 													<td style={{ maxWidth: '200px' }}>
-														<Editable text={elem[key] as string}></Editable>
+														<Editable
+															firebase_collection={'competition'}
+															firebase_id={elem['NO_ID_FIELD'] as string}
+															text={elem[key] as string}
+														></Editable>
 													</td>
 												</Fragment>
 											)

@@ -25,7 +25,10 @@ const ArrayHandler: React.FC<{ arr_data: Array<any>; path: string; firebase_coll
 				{arr_data.map((data, idx) => {
 					return (
 						<Uploadable>
-							<img style={{ width: '100%', maxWidth: '20	0px' }} src={data as string} alt='' />
+							<>
+								<img style={{ width: '100px', maxWidth: '100px' }} src={data as string} alt='' />
+								<hr />
+							</>
 						</Uploadable>
 					)
 				})}
@@ -66,7 +69,7 @@ const ObjectHandler: React.FC<{ path: string; obj_data: any; firebase_collection
 							return (
 								<td>
 									<Editable
-										path={path + '/' + key}
+										path={path + '.' + key}
 										firebase_collection={firebase_collection}
 										firebase_id={firebase_id}
 										text={obj_data[key] as string}
@@ -140,7 +143,7 @@ const Tester: React.FC<{ collection_name: string }> = ({ collection_name }) => {
 	if (status === 'loading') {
 		return <p>Fetching Data</p>
 	} else {
-		console.log(data)
+		// console.log(data)
 		return (
 			<Fragment>
 				<Table striped bordered hover>
@@ -165,7 +168,7 @@ const Tester: React.FC<{ collection_name: string }> = ({ collection_name }) => {
 												<Fragment key={elem[key] as string}>
 													<td style={{ width: '200px', maxWidth: '200px' }}>
 														<Uploadable>
-															<img style={{ width: '100%' }} src={elem[key] as string} alt='' />
+															<img style={{ width: '100px' }} src={elem[key] as string} alt='' />
 														</Uploadable>
 													</td>
 												</Fragment>

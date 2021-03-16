@@ -1,26 +1,71 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import 'firebase/firestore'
+import { FirebaseAppProvider, useFirestore, useFirestoreCollectionData } from 'reactfire'
+
+import './App.css'
+
+import config from './firebase_config.json'
+
+const Tester: React.FC = () => {
+	const burritoRef = useFirestore().collection('competitions')
+
+	const { status, data } = useFirestoreCollectionData(burritoRef)
+	if (status === 'loading') {
+		return <p>Fetching Data</p>
+	} else {
+		console.log(data)
+		return (
+			<Fragment>
+				<table>
+					<thead>
+						<tr>
+							{Object.keys(data?.[0])
+								.sort()
+								.map((elem) => {
+									return <th>{elem}</th>
+								})}
+						</tr>
+					</thead>
+					<tbody>
+						{data.map((elem) => {
+							const keys = Object.keys(data?.[0]).sort()
+							return (
+								<tr key={(elem['NO_ID_FIELD'] as string) ?? ''}>
+									{keys.map((key) => {
+										if (key === 'image') {
+											return (
+												<Fragment>
+													<td>
+														<img style={{ height: '100px' }} src={elem[key] as string} alt='' />
+													</td>
+												</Fragment>
+											)
+										} else
+											return (
+												<Fragment>
+													<td>{elem[key] as string}</td>
+												</Fragment>
+											)
+									})}
+								</tr>
+							)
+						})}
+					</tbody>
+				</table>
+			</Fragment>
+		)
+	}
 }
 
-export default App;
+const App: React.FC = () => {
+	return (
+		<Fragment>
+			<FirebaseAppProvider firebaseConfig={config}>
+				<Tester></Tester>
+			</FirebaseAppProvider>
+		</Fragment>
+	)
+}
+
+export default App

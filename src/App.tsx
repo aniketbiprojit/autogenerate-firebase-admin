@@ -66,20 +66,13 @@ const App: React.FC<{ collections: Array<string> }> = ({ collections }) => {
 			<Router basename='/home'>
 				<Switch>
 					<Route path='/' exact>
-						<Fragment>
-							{loggedIn && (
-								<Fragment>
-									{collections.map((elem) => {
-										return <Link to={`/${elem}`}>{elem.toUpperCase()}</Link>
-									})}
-								</Fragment>
-							)}
-						</Fragment>
+						{loggedIn && <Fragment>{Header(collections)}</Fragment>}
 					</Route>
 					{loggedIn &&
 						collections.map((elem) => {
 							return (
 								<Route path={`/${elem}`}>
+									{Header(collections)}
 									<Tester collection_name={elem}></Tester>
 								</Route>
 							)
@@ -91,3 +84,17 @@ const App: React.FC<{ collections: Array<string> }> = ({ collections }) => {
 }
 
 export default App
+
+function Header(collections: string[]) {
+	return (
+		<ul>
+			{collections.map((elem) => {
+				return (
+					<li>
+						<Link to={`/${elem}`}>{elem.toUpperCase()}</Link>
+					</li>
+				)
+			})}
+		</ul>
+	)
+}

@@ -10,7 +10,7 @@ import { FirebaseAppProvider } from 'reactfire'
 ReactDOM.render(
 	<React.StrictMode>
 		<FirebaseAppProvider firebaseConfig={config}>
-			<App />
+			<App collections={['items', 'data', 'competitions']} />
 		</FirebaseAppProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

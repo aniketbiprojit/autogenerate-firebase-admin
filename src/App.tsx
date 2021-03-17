@@ -28,7 +28,7 @@ export const signInWithGoogle = () => {
 		})
 }
 
-const App: React.FC = () => {
+const App: React.FC<{ collections: Array<string> }> = ({ collections }) => {
 	const [loggedIn, setLoggedIn] = useState(false)
 	const [email, setEmail] = useState('')
 	useEffect(() => {
@@ -43,10 +43,7 @@ const App: React.FC = () => {
 		}, 1000)
 		return () => {}
 	}, [])
-	// setInterval(() => {
-	// 	console.log(firebase.auth().currentUser)
-	// }, 1000)
-	const collections = ['items', 'data', 'competitions']
+
 	return (
 		<Fragment>
 			<p>{email}</p>

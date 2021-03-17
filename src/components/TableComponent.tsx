@@ -4,6 +4,7 @@ import { Table } from 'react-bootstrap'
 import { Uploadable } from './Uploadable'
 import { DataHandler } from './DataHandler'
 import { Editable } from './Editable'
+import { Deletable } from './Deletable'
 
 export const Tester: React.FC<{ collection_name: string }> = ({ collection_name }) => {
 	const data_ref = useFirestore().collection(collection_name)
@@ -48,7 +49,10 @@ export const Tester: React.FC<{ collection_name: string }> = ({ collection_name 
 												<Fragment key={elem[key] as string}>
 													<td style={{ maxWidth: '250px', width: '250px' }}>
 														{key === 'NO_ID_FIELD' ? (
-															(elem[key] as string)
+															<Fragment>
+																<p>{elem[key] as string}</p>
+																<Deletable firebase_collection={collection_name} firebase_id={elem[key] as string} />
+															</Fragment>
 														) : (
 															<Editable
 																path={key}

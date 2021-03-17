@@ -10,6 +10,8 @@ import { Tester } from './components/TableComponent'
 import firebase from 'firebase'
 import { Button } from 'react-bootstrap'
 
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
+
 if (firebase.apps.length === 0) {
 	firebase.initializeApp(config)
 }
@@ -44,6 +46,7 @@ const App: React.FC = () => {
 	// setInterval(() => {
 	// 	console.log(firebase.auth().currentUser)
 	// }, 1000)
+	const collections = ['items', 'data', 'competitions']
 	return (
 		<Fragment>
 			<p>{email}</p>
@@ -57,13 +60,35 @@ const App: React.FC = () => {
 						} catch (err) {
 							console.error(err)
 						}
-						setLoggedIn(true)
+						setLoggedIn(false)
 					}}
 				>
 					Logout
 				</Button>
 			)}
-			<Tester collection_name='items'></Tester>
+			<Router basename='/home'>
+				<Switch>
+					<Route path='/' exact>
+						<Fragment>
+							{loggedIn && (
+								<Fragment>
+									{collections.map((elem) => {
+										return <Link to={`/${elem}`}>{elem.toUpperCase()}</Link>
+									})}
+								</Fragment>
+							)}
+						</Fragment>
+					</Route>
+					{loggedIn &&
+						collections.map((elem) => {
+							return (
+								<Route path={`/${elem}`}>
+									<Tester collection_name={elem}></Tester>
+								</Route>
+							)
+						})}
+				</Switch>
+			</Router>
 		</Fragment>
 	)
 }
